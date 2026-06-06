@@ -11,7 +11,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# CSS Custom
+# CSS Custom (Hanya untuk elemen dasar)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
@@ -25,10 +25,8 @@ st.markdown("""
         border-left: 5px solid #2E8B57;
     }
     .custom-card-blue { border-left: 5px solid #1E90FF; }
-    .custom-card-red { border-left: 5px solid #FF6B6B; }
     h1, h2, h3 { color: #2E8B57; }
     [data-testid="stMetricValue"] { font-size: 1.5rem; }
-    [data-testid="stSidebar"] { background-color: #F0F8FF; }
     .stButton>button { background-color: #2E8B57; color: white; border-radius: 8px; border: none; }
     </style>
 """, unsafe_allow_html=True)
@@ -89,24 +87,20 @@ elif selection == "🧪 Panduan Sampling":
             st.metric("Volume Minimal", data['volume'])
         
         with c2:
-            # === PERBAIKAN LINE 97 ===
-            html_detail = f"""
+            # Card menggunakan HTML sederhana
+            st.markdown(f"""
             <div class="custom-card">
                 <h4>📦 Detail Pengawasan</h4>
-                <table style="width:100%;">
-                    <tr><td><b>🫙 Jenis Wadah</b></td><td>:</td><td>{data['wadah']}</td></tr>
-                    <tr><td><b>🧪 Bahan Pengawet</b></td><td>:</td><td>{data['pengawet']}</td></tr>
-                    <tr><td><b>❄️ Suhu Penyimpanan</b></td><td>:</td><td>{data['penyimpanan']}</td></tr>
-                    <tr><td><b>⏳ Holding Time</b></td><td>:</td><td>{data['holding_time']}</td></tr>
-                </table>
-                <br>
+                <p><b>🫙 Jenis Wadah:</b> {data['wadah']}</p>
+                <p><b>🧪 Bahan Pengawet:</b> {data['pengawet']}</p>
+                <p><b>❄️ Suhu Penyimpanan:</b> {data['penyimpanan']}</p>
+                <p><b>⏳ Holding Time:</b> {data['holding_time']}</p>
                 <p><b>📝 Catatan:</b> <i>{data['catatan']}</i></p>
             </div>
-            """
-            st.markdown(html_detail, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 3. HALAMAN EVALUASI BAKU MUTU
+# 3. HALAMAN EVALUASI BAKU MUTU (PAKAI NATIVE COMPONENTS - LEBIH STABIL)
 # -----------------------------------------------------------------------------
 elif selection == "📊 Evaluasi Baku Mutu":
     st.title("📊 Evaluasi Baku Mutu Kualitas Air")
@@ -132,30 +126,16 @@ elif selection == "📊 Evaluasi Baku Mutu":
     
     selisih = abs(input_value - standar)
     
-    # === PERBAIKAN LINE 183 & 188 ===
-    # Gunakan metode .format() untuk menghindari konflik f-string dengan HTML
+    # === LINE 191: GUNAKAN ST.SUCCESS & ST.ERROR (NATIVE) ===
     if status_ok:
-        html_status = """
-        <div class="custom-card" style="border-left-color: #2E8B57;">
-            <h2 style="color: #2E8B57; text-align: center;">✅ MEMENUHI BAKU MUTU</h2>
-            <p style="text-align: center;">Nilai analisis <b>{}</b> {} Standar <b>{}</b></p>
-        </div>
-        """.format(input_value, operator_symbol, standar)
-        st.markdown(html_status, unsafe_allow_html=True)
+        st.success(f"✅ MEMENUHI BAKU MUTU | Nilai {input_value} {operator_symbol} Standar {standar}")
         
         m1, m2, m3 = st.columns(3)
         m1.metric("Hasil Analisis", f"{input_value}")
         m2.metric("Baku Mutu", f"{standar}")
         m3.metric("Selisih", f"{selisih} (Aman)")
     else:
-        # Line 188: Bagian else juga diperbaiki
-        html_status = """
-        <div class="custom-card" style="border-left-color: #FF6B6B;">
-            <h2 style="color: #FF6B6B; text-align: center;">❌ TIDAK MEMENUHI BAKU MUTU</h2>
-            <p style="text-align: center;">Nilai analisis <b>{}</b> {} Standar <b>{}</b></p>
-        </div>
-        """.format(input_value, operator_symbol, standar)
-        st.markdown(html_status, unsafe_allow_html=True)
+        st.error(f"❌ TIDAK MEMENUHI BAKU MUTU | Nilai {input_value} {operator_symbol} Standar {standar}")
         
         m1, m2, m3 = st.columns(3)
         m1.metric("Hasil Analisis", f"{input_value}", delta_color="inverse")
@@ -171,278 +151,17 @@ elif selection == "ℹ️ Tentang Aplikasi":
     st.title("ℹ️ Tentang EcoSurface")
     st.markdown("---")
     st.markdown("""
-    <div class="custom-card custom-card-blue">
+    <div class="custom-card">
         <h2>🌊 EcoSurface v1.0</h2>
         <p><b>Sistem Pendukung Pemantauan Kualitas Air Permukaan</b></p>
         <br>
-        <table>
-            <tr><td><b>Nama Aplikasi</b></td><td>:</td><td>EcoSurface</td></tr>
-            <tr><td><b>Versi</b></td><td>:</td><td>1.0</td></tr>
-            <tr><td><b>Developer</b></td><td>:</td><td>Mahasiswa Politeknik AKA Bogor</td></tr>
-            <tr><td><b>Teknologi</b></td><td>:</td><td>Python & Streamlit</td></tr>
-        </table>
-        <br>
+        <p><b>Nama Aplikasi:</b> EcoSurface</p>
+        <p><b>Versi:</b> 1.0</p>
+        <p><b>Developer:</b> Mahasiswa Politeknik AKA Bogor</p>
+        <p><b>Teknologi:</b> Python & Streamlit</p>
         <h4>Deskripsi</h4>
         <p>Aplikasi pendukung pemantauan kualitas air permukaan dengan panduan sampling dan evaluasi hasil analisis.</p>
     </div>
     """, unsafe_allow_html=True)
-    st.markdown("---")
-    st.success("Terima kasih telah menggunakan EcoSurface! 💧")        
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Hasil Analisis", f"{input_value}")
-        m2.metric("Baku Mutu", f"{standar}")
-        m3.metric("Selisih", f"{selisih} (Aman)")
-    else:
-        html_hasil = f"""
-        <div class="custom-card custom-card-red">
-            <h2 style="color: #FF6B6B; text-align: center;">❌ TIDAK MEMENUHI BAKU MUTU</h2>
-            <p style="text-align: center;">Nilai analisis <b>{input_value}</b> {operator_symbol} Standar <b>{standar}</b></p>
-        </div>
-        """
-        st.markdown(html_hasil, unsafe_allow_html=True)
-        
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Hasil Analisis", f"{input_value}", delta_color="inverse")
-        m2.metric("Baku Mutu", f"{standar}")
-        m3.metric("Selisih", f"+{selisih} (Melebihi)")
-
-    st.info(f"📌 Catatan: Parameter {selected_param} menggunakan standar = {standar}")
-
-# -----------------------------------------------------------------------------
-# 4. TENTANG APLIKASI
-# -----------------------------------------------------------------------------
-elif selection == "ℹ️ Tentang Aplikasi":
-    st.title("ℹ️ Tentang EcoSurface")
-    st.markdown("---")
-    st.markdown("""
-    <div class="custom-card custom-card-blue">
-        <h2>🌊 EcoSurface v1.0</h2>
-        <p><b>Sistem Pendukung Pemantauan Kualitas Air Permukaan</b></p>
-        <br>
-        <table>
-            <tr><td><b>Nama Aplikasi</b></td><td>:</td><td>EcoSurface</td></tr>
-            <tr><td><b>Versi</b></td><td>:</td><td>1.0</td></tr>
-            <tr><td><b>Developer</b></td><td>:</td><td>Mahasiswa Politeknik AKA Bogor</td></tr>
-            <tr><td><b>Teknologi</b></td><td>:</td><td>Python & Streamlit</td></tr>
-        </table>
-        <br>
-        <h4>Deskripsi</h4>
-        <p>Aplikasi pendukung pemantauan kualitas air permukaan dengan panduan sampling dan evaluasi hasil analisis.</p>
-    </div>
-    """, unsafe_allow_html=True)
-    st.markdown("---")
-    st.success("Terima kasih telah menggunakan EcoSurface! 💧")        m2.metric("Baku Mutu", f"{standar}")
-        m3.metric("Selisih", f"{selisih} (Aman)")
-    else:
-        st.markdown(f"""
-        <div class="custom-card custom-card-red">
-            <h2 style="color: #FF6B6B; text-align: center;">❌ TIDAK MEMENUHI BAKU MUTU</h2>
-            <p style="text-align: center;">Nilai analisis <b>{input_value}</b> {operator_symbol} Standar <b>{standar}</b></p>
-        </div>
-        """, unsafe_allow_html=True)
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Hasil Analisis", f"{input_value}", delta_color="inverse")
-        m2.metric("Baku Mutu", f"{standar}")
-        m3.metric("Selisih", f"+{selisih} (Melebihi)")
-
-    st.info(f"📌 Catatan: Parameter {selected_param} menggunakan standar = {standar}")
-
-# -----------------------------------------------------------------------------
-# 4. TENTANG APLIKASI
-# -----------------------------------------------------------------------------
-elif selection == "ℹ️ Tentang Aplikasi":
-    st.title("ℹ️ Tentang EcoSurface")
-    st.markdown("---")
-    st.markdown("""
-    <div class="custom-card custom-card-blue">
-        <h2>🌊 EcoSurface v1.0</h2>
-        <p><b>Sistem Pendukung Pemantauan Kualitas Air Permukaan</b></p>
-        <br>
-        <table>
-            <tr><td><b>Nama Aplikasi</b></td><td>:</td><td>EcoSurface</td></tr>
-            <tr><td><b>Versi</b></td><td>:</td><td>1.0</td></tr>
-            <tr><td><b>Developer</b></td><td>:</td><td>Mahasiswa Politeknik AKA Bogor</td></tr>
-            <tr><td><b>Teknologi</b></td><td>:</td><td>Python & Streamlit</td></tr>
-        </table>
-        <br>
-        <h4>Deskripsi</h4>
-        <p>Aplikasi pendukung pemantauan kualitas air permukaan dengan panduan sampling dan evaluasi hasil analisis.</p>
-    </div>
-    """, unsafe_allow_html=True)
-    st.markdown("---")
-    st.success("Terima kasih telah menggunakan EcoSurface! 💧")    st.markdown("Pilih parameter untuk melihat prosedur teknis pengambilan dan pengawetan sampel.")
-    st.markdown("---")
-
-    # Selectbox Parameters
-    list_param = sorted(sampling_data.keys())
-    param_choice = st.selectbox("Pilih Parameter:", list_param)
-
-    if param_choice:
-        data = sampling_data[param_choice]
-        
-        # Layout 2 Kolom
-        c1, c2 = st.columns([1, 3])
-        
-        with c1:
-            st.markdown(f"### 🔬 {param_choice}")
-            st.metric("Volume Minimal", data['volume'])
-        
-        with c2:
-            # Tampilkan Detail dalam Card
-            st.markdown(f"""
-            <div class="custom-card">
-                <h4>📦 Detail Pengawasan</h4>
-                <table style="width:100%;">
-                    <tr>
-                        <td><b>🫙 Jenis Wadah</b></td>
-                        <td>:</td>
-                        <td>{data['wadah']}</td>
-                    </tr>
-                    <tr>
-                        <td><b>🧪 Bahan Pengawet</b></td>
-                        <td>:</td>
-                        <td>{data['pengawet']}</td>
-                    </tr>
-                    <tr>
-                        <td><b>❄️ Suhu Penyimpanan</b></td>
-                        <td>:</td>
-                        <td>{data['penyimpanan']}</td>
-                    </tr>
-                    <tr>
-                        <td><b>⏳ Holding Time</b></td>
-                        <td>:</td>
-                        <td>{data['holding_time']}</td>
-                    </tr>
-                </table>
-                <br>
-                <p><b>📝 Catatan:</b> <i>{data['catatan']}</i></p>
-            </div>
-            """, unsafe_allow_html=True)
-
-# -----------------------------------------------------------------------------
-# 3. HALAMAN EVALUASI BAKU MUTU
-# -----------------------------------------------------------------------------
-elif selection == "📊 Evaluasi Baku Mutu":
-    st.title("📊 Evaluasi Baku Mutu Kualitas Air")
-    st.markdown("-input hasil analisis dan bandingkan dengan standar regulasi.")
-    st.markdown("---")
-
-    # Filter parameter yang memiliki baku mutu (exclude Suhu/pH khusus jika perlu, tapi kita gunakan semua yang ada di dict)
-    list_baku_mutu = list(baku_mutu.keys())
-    
-    # Layout Input
-    col_input1, col_input2 = st.columns(2)
-    
-    with col_input1:
-        selected_param = st.selectbox("Pilih Parameter", list_baku_mutu)
-    
-    with col_input2:
-        # Input nilai, tentikan float
-        input_value = st.number_input(
-            f"Masukkan Nilai {selected_param}", 
-            min_value=0.0, 
-            value=0.0, 
-            step=0.01,
-            format="%.3f"
-        )
-
-    # AMBIL NILAI BAKU MUTU
-    standar = baku_mutu.get(selected_param, 0)
-    
-    st.markdown("---")
-    
-    # LOGIKA EVALUASI
-    # Jika parameter DO, logikanya Minimum (>=), selebihnya Maximum (<=)
-    
-    if selected_param == "DO":
-        # Logika DO: Harus >= Standar
-        status_ok = input_value >= standar
-        operator_symbol = "≥"
-    else:
-        # Logika Umum: Harus <= Standar (Tidak melebihi)
-        status_ok = input_value <= standar
-        operator_symbol = "≤"
-    
-    # Hitung Selisih
-    selisih = abs(input_value - standar)
-    
-    # TAMPILKAN HASIL
-    if status_ok:
-        # Tampilan MEMENUHI (Hijau)
-        st.markdown(f"""
-        <div class="custom-card" style="border-left-color: #2E8B57;">
-            <h2 style="color: #2E8B57; text-align: center;">✅ MEMENUHI BAKU MUTU</h2>
-            <p style="text-align: center;">Nilai analisis <b>{input_value}</b> {operator_symbol} Standar <b>{standar}</b></p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Detail metrics
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Hasil Analisis", f"{input_value}")
-        m2.metric("Baku Mutu", f"{standar}")
-        m3.metric("Selisih", f"{selisih} (Aman)")
-        
-    else:
-        # Tampilan TIDAK MEMENUHI (Merah)
-        st.markdown(f"""
-        <div class="custom-card custom-card-red" style="border-left-color: #FF6B6B;">
-            <h2 style="color: #FF6B6B; text-align: center;">❌ TIDAK MEMENUHI BAKU MUTU</h2>
-            <p style="text-align: center;">Nilai analisis <b>{input_value}</b> {operator_symbol} Standar <b>{standar}</b></p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Detail metrics
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Hasil Analisis", f"{input_value}", delta_color="inverse")
-        m2.metric("Baku Mutu", f"{standar}")
-        m3.metric("Selisih", f"+{selisih} (Melebihi)", delta="over_limit")
-
-    # Catatan bawah
-    st.info(f"""
-    📌 Catatan Logika:
-    - Parameter <b>{selected_param}</b> menggunakan acuan baku mutu = **{standar}**.
-    - Status "Memenuhi"意味着 nilai tidak melampaui (atau tidak lebih rendah untuk DO) baku mutu.
-    """)
-
-# -----------------------------------------------------------------------------
-# 4. TENTANG APLIKASI
-# -----------------------------------------------------------------------------
-elif selection == "ℹ️ Tentang Aplikasi":
-    st.title("ℹ️ Tentang EcoSurface")
-    st.markdown("---")
-    
-    st.markdown("""
-    <div class="custom-card custom-card-blue">
-        <h2>🌊 EcoSurface v1.0</h2>
-        <p><b>Sistem Pendukung Pemantauan Kualitas Air Permukaan</b></p>
-        <br>
-        <table>
-            <tr>
-                <td><b>Nama Aplikasi</b></td>
-                <td>:</td>
-                <td>EcoSurface</td>
-            </tr>
-            <tr>
-                <td><b>Versi</b></td>
-                <td>:</td>
-                <td>1.0</td>
-            </tr>
-            <tr>
-                <td><b>Developer</b></td>
-                <td>:</td>
-                <td>Mahasiswa Politeknik AKA Bogor</td>
-            </tr>
-            <tr>
-                <td><b>Teknologi</b></td>
-                <td>:</td>
-                <td>Python & Streamlit</td>
-            </tr>
-        </table>
-        <br>
-        <h4>Deskripsi</h4>
-        <p>Aplikasi ini kedepankan kegiatan pemantauan kualitas air permukaan dengan menyediakan panduan sampling (metode pengawetan, wadah, holding time) dan evaluasi hasil analisis berdasarkan baku mutuair yang berlaku (PerMenLH No. 5 Tahun 2014).</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
     st.markdown("---")
     st.success("Terima kasih telah menggunakan EcoSurface! 💧")
