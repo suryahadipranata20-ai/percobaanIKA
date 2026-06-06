@@ -50,7 +50,7 @@ if selection == "🏠 Beranda":
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.metric(label="📋 Parameter Sampling", value=len(sampling_data), delta="Tersedia")
+        st.metric(label="📋 Parameter Sampling", value=len(parameter_sampling), delta="Tersedia")
     with col2:
         st.metric(label="⚖️ Baku Mutu", value=len(baku_mutu), delta="Regulasi")
     with col3:
