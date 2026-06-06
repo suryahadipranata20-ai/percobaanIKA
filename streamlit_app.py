@@ -1,6 +1,5 @@
 # app.py
 import streamlit as st
-from parameter_data import sampling_data, baku_mutu
 
 # -----------------------------------------------------------------------------
 # KONFIGURASI HALAMAN & CSS
