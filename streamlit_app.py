@@ -1,5 +1,6 @@
 # app.py
 import streamlit as st
+from parameter_data import sampling_data, baku_mutu
 
 # -----------------------------------------------------------------------------
 # KONFIGURASI HALAMAN & CSS
@@ -10,7 +11,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# CSS Custom (Hanya untuk elemen dasar)
+# CSS Custom
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
@@ -50,7 +51,7 @@ if selection == "🏠 Beranda":
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.metric(label="📋 Parameter Sampling", value=len(parameter_sampling), delta="Tersedia")
+        st.metric(label="📋 Parameter Sampling", value=len(sampling_data), delta="Tersedia")
     with col2:
         st.metric(label="⚖️ Baku Mutu", value=len(baku_mutu), delta="Regulasi")
     with col3:
@@ -86,7 +87,6 @@ elif selection == "🧪 Panduan Sampling":
             st.metric("Volume Minimal", data['volume'])
         
         with c2:
-            # Card menggunakan HTML sederhana
             st.markdown(f"""
             <div class="custom-card">
                 <h4>📦 Detail Pengawasan</h4>
@@ -99,7 +99,7 @@ elif selection == "🧪 Panduan Sampling":
             """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 3. HALAMAN EVALUASI BAKU MUTU (PAKAI NATIVE COMPONENTS - LEBIH STABIL)
+# 3. HALAMAN EVALUASI BAKU MUTU
 # -----------------------------------------------------------------------------
 elif selection == "📊 Evaluasi Baku Mutu":
     st.title("📊 Evaluasi Baku Mutu Kualitas Air")
@@ -118,14 +118,13 @@ elif selection == "📊 Evaluasi Baku Mutu":
     
     if selected_param == "DO":
         status_ok = input_value >= standar
-        operator_symbol = "≥"
+        operator_symbol = ">="
     else:
         status_ok = input_value <= standar
-        operator_symbol = "≤"
+        operator_symbol = "<="
     
     selisih = abs(input_value - standar)
     
-    # === LINE 191: GUNAKAN ST.SUCCESS & ST.ERROR (NATIVE) ===
     if status_ok:
         st.success(f"✅ MEMENUHI BAKU MUTU | Nilai {input_value} {operator_symbol} Standar {standar}")
         
